@@ -1,0 +1,163 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+{% load static %}
+
+        {% if request.GET.topic %}
+            <div class="page-title wb">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                            <h2><i class="fa fa-leaf bg-green"></i> Category by: {{ request.GET.topic }}</h2>
+                        </div><!-- end col -->
+                        <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'post:index' %}">Home</a></li>
+                                <li class="breadcrumb-item active">{{ request.GET.topic }}</li>
+                            </ol>
+                        </div><!-- end col -->                    
+                    </div><!-- end row -->
+                </div><!-- end container -->
+            </div><!-- end page-title -->
+        {% else %}
+            <section class="section first-section">
+                <div class="container-fluid">
+                    <div class="masonry-blog clearfix">
+                        {% for post in featured_posts %}
+                            <div class="center-side">
+                                <div class="masonry-box post-media">
+                                     <img src="{{ post.image.url }}" alt="" class="img-fluid">
+                                     <div class="shadoweffect">
+                                        <div class="shadow-desc">
+                                            <div class="blog-meta">
+                                                <span class="bg-aqua"><a href="{{ request.scheme }}://{{ request.get_host }}/?topic={{ post.topic }}" title="">{{ post.topic }}</a></span>
+                                                <h4><a href="{{ post.get_absolute_url }}" title="">{{ post.title }}</a></h4>
+                                                <small><a title="">{{ post.publishing_date }}</a></small>
+                                                <small><a title="">by {{ post.user }}</a></small>
+                                            </div><!-- end meta -->
+                                        </div><!-- end shadow-desc -->
+                                    </div><!-- end shadow -->
+                                </div><!-- end post-media -->
+                            </div><!-- end left-side -->
+                        {% endfor %}
+                    </div><!-- end masonry -->
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="section wb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                        <div class="page-wrapper">
+                            <div class="blog-list clearfix">
+                                {% for post in posts %}
+                                    <div class="blog-box row">
+                                        <div class="col-md-4">
+                                            <div class="post-media">
+                                                <a href="{{ post.get_absolute_url }}" title="">
+                                                    <img src="{{ post.image.url }}" alt="" class="img-fluid">
+                                                    <div class="hovereffect"></div>
+                                                </a>
+                                            </div><!-- end media -->
+                                        </div><!-- end col -->
+
+                                        <div class="blog-meta big-meta col-md-8">
+                                            <span class="bg-aqua"><a href="{{ request.scheme }}://{{ request.get_host }}/?topic={{ post.topic }}" title="">{{ post.topic }}</a></span>
+                                            <h4><a href="{{ post.get_absolute_url }}" title="">{{ post.title }}</p>
+                                            <small><a href="{{ post.get_absolute_url }}" title="">{{ post.publishing_date }}</a></small>
+                                            <small><a href="{{ post.get_absolute_url }}" title="">by {{ post.user }}</a></small>
+                                        </div><!-- end meta -->
+                                    </div><!-- end blog-box -->
+
+                                <hr class="invis">
+
+                                {% endfor %}
+                            </div><!-- end blog-list -->
+                        </div><!-- end page-wrapper -->
+
+                        <hr class="invis">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-start">
+                                        {% if posts.has_previous %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}&search={{ request.GET.search }}&topic={{ request.GET.topic }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                                        {% endif %}
+
+                                        {% if posts.number|add:'-4' > 1 %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ posts.number|add:'-5' }}&search={{ request.GET.search }}&topic={{ request.GET.topic }}">&hellip;</a></li>
+                                        {% endif %}
+
+                                        {% for i in posts.paginator.page_range %}
+                                            {% if posts.number == i %}
+                                                <li class="active"><a class="page-link">{{ i }}</a></li>
+                                            {% elif i > posts.number|add:'-5' and i < posts.number|add:'5' %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ i }}&search={{ request.GET.search }}&topic={{ request.GET.topic }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if posts.number|add:'-4' > 1 %} 
+                                            <li class="page-item"><a class="page-link" href="?page={{ posts.number|add:'-5' }}&search={{ request.GET.search }}&topic={{ request.GET.topic }}">&hellip;</a></li>
+                                        {% endif %}
+
+                                        {% if posts.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ posts.next_page_number }}&search={{ request.GET.search }}&topic={{ request.GET.topic }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div><!-- end col -->
+                        </div><!-- end row -->
+                    </div><!-- end col -->
+
+                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                        <div class="sidebar">
+                            <div class="widget">
+                                <h2 class="widget-title">Search</h2>
+                                <form class="form-inline search-form" type="get" action="." style="margin: 0">
+                                    <div class="form-group">
+                                        <input name="search" type="text" class="form-control" placeholder="Search on the site">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div><!-- end widget -->
+
+                            <div class="widget">
+                                <h2 class="widget-title">Recent Posts</h2>
+                                <div class="blog-list-widget">
+                                    <div class="list-group">
+                                        {% for post in recent_posts %}
+                                            <a class="list-group-item list-group-item-action flex-column align-items-start">
+                                                <div class="w-100 justify-content-between">
+                                                    <a href="{{ post.get_absolute_url }}"><img src="{{ post.image.url }}" alt="" class="img-fluid float-left"></a>
+                                                    <a href="{{ post.get_absolute_url }}"><h5 class="mb-1">{{ post.title }}</h5></a>
+                                                    <a href="{{ post.get_absolute_url }}"><small>{{ post.publishing_date }}</small></a>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div><!-- end blog-list -->
+                            </div><!-- end widget -->
+
+                            <div class="widget">
+                                <h2 class="widget-title">Popular Categories</h2>
+                                <div class="link-widget">
+                                    <ul>
+                                        <li><a href="{{ request.scheme }}://{{ request.get_host }}/?topic=Entertainment">Entertainment</a></li>
+                                        <li><a href="{{ request.scheme }}://{{ request.get_host }}/?topic=Business">Business</a></li>
+                                        <li><a href="{{ request.scheme }}://{{ request.get_host }}/?topic=Sports">Sports</a></li>
+                                        <li><a href="{{ request.scheme }}://{{ request.get_host }}/?topic=Technology">Technology</a></li>
+                                    </ul>
+                                </div><!-- end link-widget -->
+                            </div><!-- end widget -->
+                        </div><!-- end sidebar -->
+                    </div><!-- end col -->
+                </div><!-- end row -->
+            </div><!-- end container -->
+        </section>
+
+{% endblock %}

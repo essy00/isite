@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+{% load static %}
+
+        <section class="section wb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1">
+                        <div class="page-wrapper">
+                            <div class="row">
+                                <div class="col-lg-8 offset-lg-2">
+                                    <form method="POST" enctype="multipart/form-data" class="form-wrapper">
+                                        {% csrf_token %}
+
+                                        <table>{{ form.as_table }}</table>
+                                        {{ form.media }}
+                
+                                        <hr class="invis">
+
+                                        <input class="btn btn-primary" type="submit" value="{{ title }}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div><!-- end page-wrapper -->
+                    </div><!-- end col -->
+                </div><!-- end row -->
+            </div><!-- end container -->
+        </section>
+
+{% endblock %}
